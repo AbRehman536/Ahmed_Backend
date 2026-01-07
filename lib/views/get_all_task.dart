@@ -1,6 +1,10 @@
 
 import 'package:ahmed_backend/model/task.dart';
 import 'package:ahmed_backend/services/task.dart';
+import 'package:ahmed_backend/views/create_task.dart';
+import 'package:ahmed_backend/views/get_completed_task.dart';
+import 'package:ahmed_backend/views/get_incompleted_task.dart';
+import 'package:ahmed_backend/views/update_task.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +16,18 @@ class GetAllTask extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Get All Task"),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> GetCompletedTask()));
+          }, icon: Icon(Icons.circle)),
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> GetInCompletedTask()));
+          }, icon: Icon(Icons.incomplete_circle)),
+        ],
       ),
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateTask()));
+      },child: Icon(Icons.add),),
       body: StreamProvider.value(
           value: TaskServices().getAllTask(),
           initialData: [TaskModel()],
@@ -24,7 +39,28 @@ class GetAllTask extends StatelessWidget {
                   leading: Icon(Icons.task),
                   title: Text(taskList[index].name.toString()),
                   subtitle: Text(taskList[index].description.toString()),
-                  trailing: Icon(Icons.arrow_forward_ios),
+                  trailing: Row(children: [
+                    Checkbox(
+                        value: taskList[index].isCompleted,
+                        onChanged: (value)async{
+                          await TaskServices().markTaskAsComplete(
+                              taskID: taskList[index].docId.toString(),
+                              isCompleted: value!);
+                        }),
+                    IconButton(onPressed: ()async{
+                      try{
+                        await TaskServices().deleteTask(
+                          taskList[index].docId.toString()
+                        );
+                      }catch(e){
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(e.toString())));
+                      }
+                    }, icon: Icon(Icons.delete)),
+                    IconButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> UpdateTask(model: taskList[index])));
+                    }, icon: Icon(Icons.edit))
+                  ],),
                 );
               },
 
