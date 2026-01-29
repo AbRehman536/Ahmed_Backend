@@ -6,6 +6,7 @@ import 'package:ahmed_backend/views/get_all_priority.dart';
 import 'package:ahmed_backend/views/get_completed_task.dart';
 import 'package:ahmed_backend/views/get_favorite.dart';
 import 'package:ahmed_backend/views/get_incompleted_task.dart';
+import 'package:ahmed_backend/views/get_profile.dart';
 import 'package:ahmed_backend/views/update_task.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,9 @@ class GetAllTask extends StatelessWidget {
           IconButton(onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context)=> GetFavorite()));
           }, icon: Icon(Icons.favorite)),
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> GetProfile()));
+          }, icon: Icon(Icons.person)),
         ],
       ),
       floatingActionButton: FloatingActionButton(onPressed: (){
